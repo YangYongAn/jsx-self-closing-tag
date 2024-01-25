@@ -4,7 +4,7 @@
   "description": "help you auto close the self-closing tag in tsx/jsx when you input a '/'",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.50.0"
   },
   "categories": [
     "Other"
@@ -40,5 +40,9 @@
     "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YangYongAn/jsx-self-closing-tag.git"
   }
 }
