@@ -15,12 +15,6 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "jsx-self-closing-tag.helloWorld",
-        "title": "Hello World"
-      }
-    ]
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
@@ -47,5 +41,6 @@
     "type": "git",
     "url": "https://github.com/YangYongAn/jsx-self-closing-tag.git"
   },
-  "publisher": "YangYongAn"
+  "publisher": "YangYongAn",
+  "icon": "./images/gpt-1706163752496.png"
 }
