@@ -60,7 +60,7 @@ function getBeforeText(currentPositon: vscode.Position, document: vscode.TextDoc
 		previousLineText = document.getText(previousLineRange);
 	}
 
-	return previousLineText + currentLineText;
+	return (previousLineText + currentLineText).trim();
 
 
 }
