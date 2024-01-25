@@ -4,9 +4,9 @@ Help you auto close the self-closing tag in TSX / JSX when you input a '/'
 
 ## Features
 
-See the demo.gif:
+A picture is worth a thousand words:
 
-![demo.gif](demo.gif)
+![demo.gif](./images/demo.gif)
 
 ## Requirements
 
