@@ -20,7 +20,9 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 			const tagName = afterText.match(/><\/(\w+)\/?>/)?.[1]; // 通过正则匹配，看看后面是不是有标签，如果有的话，就需要自闭合
 			if(tagName){ // 获取到了标签的话
 				const beforeText = getBeforeText(currentPositon, document); // 获取当前行在currentPosition之前的内容和上一行（如果 line>0）的内容
-				if(beforeText.endsWith(`<${tagName}`)){ // 如果前面是以<${tagName}开头的话，就需要自闭合
+				// 使用正则表达式匹配开始标签，支持带属性的情况
+				const startTagMatch = beforeText.match(new RegExp(`<${tagName}(?:\\s+[^>]*)?$`));
+				if(startTagMatch){ // 如果匹配到开始标签
 					const editor = vscode.window.activeTextEditor;
 					if (editor && editor.document === document) {
 						editor.edit(editBuilder => {
