@@ -21,9 +21,12 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 			if(tagName){ // 获取到了标签的话
 				const beforeText = getBeforeText(currentPositon, document); // 获取当前行在currentPosition之前的内容和上一行（如果 line>0）的内容
 				if(beforeText.endsWith(`<${tagName}`)){ // 如果前面是以<${tagName}开头的话，就需要自闭合
-					const edit = new vscode.WorkspaceEdit(); // 获取编辑器对象
-					edit.replace(document.uri, new vscode.Range(currentPositon, currentPositon.translate(0,tagName.length+5)), `/>`); // 开始替换
-					vscode.workspace.applyEdit(edit); // 应用编辑
+					const editor = vscode.window.activeTextEditor;
+					if (editor && editor.document === document) {
+						editor.edit(editBuilder => {
+							editBuilder.replace(new vscode.Range(currentPositon, currentPositon.translate(0, tagName.length + 5)), `/>`);
+						}, { undoStopBefore: false, undoStopAfter: false });
+					}
 				}
 			}
 		}
