@@ -5,69 +5,52 @@ import * as vscode from 'vscode';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Congratulations, your extension "jsx-self-closing-tag" is now active!');
 	vscode.workspace.onDidChangeTextDocument(handleTextChange);
 }
-
 
 function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 	const { document, contentChanges } = event;
 	for (const change of contentChanges) {
 		const { text, range } = change;
-		if (text === '/') {// 如果输入的是/，则需要判断是否需要自闭合
-			const currentPositon = range.end; // 当前输入的位置,start和end是一样的
-			const afterText = getAfterText(currentPositon, document); // 获取当前行在currentPosition之后的内容，因为这个获取成本比较小，而且需要提前看后面是不是有标签，所以先获取这个
-			const tagName = afterText.match(/><\/(\w+)\/?>/)?.[1]; // 通过正则匹配，看看后面是不是有标签，如果有的话，就需要自闭合
-			if(tagName){ // 获取到了标签的话
-				const beforeText = getBeforeText(currentPositon, document); // 获取当前行在currentPosition之前的内容和上一行（如果 line>0）的内容
-				// 使用正则表达式匹配开始标签，支持带属性的情况
-				const startTagMatch = beforeText.match(new RegExp(`<${tagName}(?:\\s+[^>]*)?$`));
-				if(startTagMatch){ // 如果匹配到开始标签
-					const editor = vscode.window.activeTextEditor;
-					if (editor && editor.document === document) {
-						editor.edit(editBuilder => {
-							editBuilder.replace(new vscode.Range(currentPositon, currentPositon.translate(0, tagName.length + 5)), `/>`);
-						}, { undoStopBefore: false, undoStopAfter: false });
-					}
-				}
+	
+		if(text==='/'){
+			// 查看光标后面的第一个非空字符是什么
+			const afterSlashPosition = new vscode.Position(range.end.line, range.end.character + 1);
+			const afterText = getFirstNonWhitespaceChar(afterSlashPosition, document);
+
+			if(afterText==='>'){
+				// TODO 继续处理逻辑
+				console.log('这是应该要开始处理的');
+			}else{
+				console.log('不必理会');
 			}
 		}
 	}
 }
 
-/**
- * 仅获取当前行在currentPosition之后的内容
- * @param currentPositon 
- * @param document 
- */
-function getAfterText(currentPositon: vscode.Position, document: vscode.TextDocument) {
-	const line = currentPositon.line;
-	const currentLineText = document.getText(new vscode.Range(currentPositon, document.lineAt(line).range.end));
-	return currentLineText;
-}
-
 
 /**
- * 	 获取当前行在currentPosition之前的内容和上一行（如果 line>0）的内容
- * @param currentPositon 
- * @param document 
- * @returns 
+ * 获取指定位置后的第一个非空白字符
+ * @param position 起始位置
+ * @param document 文档对象
+ * @returns 第一个非空白字符，如果没找到则返回空字符串
  */
-function getBeforeText(currentPositon: vscode.Position, document: vscode.TextDocument) {
-	const line = currentPositon.line;
-	const currentLineText = document.getText(new vscode.Range(new vscode.Position(line, 0), currentPositon));
-	let previousLineText = '';
-
-	if (line > 0) {
-		const previousLine = line - 1;
-		const previousLineLastCharacter = document.lineAt(previousLine).range.end;
-		const previousLineRange = new vscode.Range(new vscode.Position(previousLine, 0), previousLineLastCharacter);
-		previousLineText = document.getText(previousLineRange);
+function getFirstNonWhitespaceChar(position: vscode.Position, document: vscode.TextDocument): string {
+	// 从当前行开始遍历
+	for (let lineIndex = position.line; lineIndex < document.lineCount; lineIndex++) {
+		const line = document.lineAt(lineIndex);
+		let startChar = lineIndex === position.line ? position.character : 0;
+		const text = line.text.substring(startChar);
+		
+		// 如果当前行trim后有内容
+		if (text.trim()) {
+			const match = text.match(/[^\s]/);
+			if (match) {
+				return match[0];
+			}
+		}
 	}
-
-	return (previousLineText + currentLineText).trim();
-
-
+	return '';
 }
 
 // This method is called when your extension is deactivated
