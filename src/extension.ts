@@ -7,18 +7,17 @@ import { isJsxSupported } from './utils/lang';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	vscode.workspace.onDidChangeTextDocument(handleTextChange);
+	const disposable = vscode.workspace.onDidChangeTextDocument(handleTextChange);
+	context.subscriptions.push(disposable);
 }
 
 function handleTextChange(event: vscode.TextDocumentChangeEvent) {
-	console.log('handleTextChange');
 	const { document, contentChanges } = event;
 
 	for (const change of contentChanges) {
 		const { text, range } = change;
 	
 		if (text === '/') {
-			console.log('输入了 / ，检查是否在支持 JSX 的环境中');
 			// 检查是否在支持 JSX 的环境中
 			if (!isJsxSupported(document, range.start)) {
 				return;
@@ -39,4 +38,6 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {
+	console.log('deactivate');
+ }

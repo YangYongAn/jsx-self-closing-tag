@@ -10,8 +10,9 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:javascriptreact",
     "onLanguage:typescriptreact",
-    "onLanguage:javascriptreact"
+    "onLanguage:markdown"
   ],
   "main": "./out/extension.js",
   "contributes": {
