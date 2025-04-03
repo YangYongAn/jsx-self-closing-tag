@@ -1,8 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { getFirstNonWhitespaceChar } from './utils/text';
 import { isJsxSupported } from './utils/lang';
+import { isAtNonSelfClosingJsxTagEnd } from './utils/ast';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -23,12 +23,8 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 				return;
 			}
 
-			// 查看光标后面的第一个非空字符是什么
-			const afterSlashPosition = new vscode.Position(range.end.line, range.end.character + 1);
-			const afterText = getFirstNonWhitespaceChar(afterSlashPosition, document);
-
-			if (afterText === '>') {
-				// TODO 继续处理逻辑
+			// 判断是否处于 JSXOpeningElement 中，且是非自闭合标签的结束位置
+			if (isAtNonSelfClosingJsxTagEnd(document.getText(), document.offsetAt(range.start))) {
 				console.log('这是应该要开始处理的');
 			} else {
 				console.log('不必理会');

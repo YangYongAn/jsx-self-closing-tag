@@ -27,6 +27,10 @@
     "package": "pnpm vsce package --no-dependencies",
     "publish": "pnpm vsce publish --no-dependencies"
   },
+  "dependencies": {
+    "@babel/parser": "^7.26.10",
+    "@babel/traverse": "^7.26.10"
+  },
   "devDependencies": {
     "@types/vscode": "^1.50.0",
     "@types/mocha": "^10.0.6",
@@ -36,7 +40,9 @@
     "eslint": "^8.56.0",
     "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.4",
-    "@vscode/test-electron": "^2.3.8"
+    "@vscode/test-electron": "^2.3.8",
+    "@babel/types": "^7.27.0",
+    "@types/babel__traverse": "^7.20.7"
   },
   "repository": {
     "type": "git",
