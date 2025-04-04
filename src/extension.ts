@@ -23,7 +23,8 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 				return;
 			}
 
-			const element = findFitJsxElement(document.getText(), document.offsetAt(range.start));
+			const currentOffset = document.offsetAt(range.start);
+			const element = findFitJsxElement(document.getText(), currentOffset);
 
 			if (element) {
 				console.log('yes there', element);
@@ -32,11 +33,12 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 				if (closingElement && closingElement.loc) {
 
 					const endPos = document.positionAt(closingElement.loc.end.index); // get the end position of the closing tag from loc.end.index
-					const writeRange = new vscode.Range(range.start, endPos); // create a new range object representing the current cursor position to the end position of the closing tag
+					const startPos = document.positionAt(currentOffset + 1); // get the start position of the closing tag from loc.start.index
+					const writeRange = new vscode.Range(startPos, endPos); // create a new range object representing the current cursor position to the end position of the closing tag
 
 					const editor = vscode.window.activeTextEditor;
 					if (editor && editor.document === document) {
-						editor.edit(editBuilder => editBuilder.replace(writeRange, '/'), { undoStopBefore: false, undoStopAfter: false });
+						editor.edit(editBuilder => editBuilder.replace(writeRange, ''), { undoStopBefore: false, undoStopAfter: false });
 					}
 				}
 
