@@ -1,9 +1,10 @@
 import { parse } from '@babel/parser';
-import traverse from '@babel/traverse';
+import traverse, { NodePath } from '@babel/traverse';
 import { JSXOpeningElement } from '@babel/types';
 
-export function isAtNonSelfClosingJsxTagEnd(code: string, offset: number): boolean {
-	const fitNodes: JSXOpeningElement[] = []; // use [] due to jsx opening element nested in other elements
+export function findFitNodePath(code: string, offset: number): NodePath<JSXOpeningElement> | null {
+	let nodePath: NodePath<JSXOpeningElement> | null = null;// use [] due to jsx opening element nested in other elements
+
 	// Temporarily "fix" the code by removing the `/` at the offset
 	const fixedCode = code.slice(0, offset) + code.slice(offset + 1);
 
@@ -14,11 +15,39 @@ export function isAtNonSelfClosingJsxTagEnd(code: string, offset: number): boole
 		});
 
 		traverse(ast, {
-			JSXOpeningElement({ node }) {
+			JSXOpeningElement(path) {
+				const { node, parent } = path;
 				const { start, end } = node.loc!;
-				if (!node.selfClosing // only consider not self closing jsx element
-					&& start.index <= offset && end.index >= offset) {
-					fitNodes.push(node);
+
+				if (node.selfClosing) { // only consider not self closing jsx element
+					return;
+				}
+
+				// check if the chars from offset to end has not other attributes
+				const chars = fixedCode.slice(offset, end.index).trim();
+
+				if (chars !== '>') {
+					return;
+				}
+
+				if (parent.type === 'JSXElement') {
+					if (parent.children.length > 1) {
+						return;
+					} else if (parent.children.length === 1) {
+						const [child] = parent.children;
+						if (child && child.type === 'JSXText') {
+							const text = child.value.trim();
+							if (text.length > 0) {
+								return;
+							}
+						}
+					}
+				}
+
+
+				if (start.index <= offset && end.index >= offset) {
+					nodePath = path;
+					path.stop();
 				}
 			},
 		});
@@ -26,15 +55,7 @@ export function isAtNonSelfClosingJsxTagEnd(code: string, offset: number): boole
 		console.error('Error parsing code:', error);
 	}
 
-	if (fitNodes.length) {
-		const inNode = fitNodes.pop()!;
-		// check if the chars from offset to end has not other attributes
-		const chars = fixedCode.slice(offset, inNode.loc!.end.index).trim();
+	return nodePath;
 
-		if (chars === '>') { // find the true end of the node , avoid some attributes behind the offset
-			return true;
-		}
-	}
 
-	return false;
 }
