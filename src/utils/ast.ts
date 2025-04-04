@@ -1,9 +1,9 @@
 import { parse } from '@babel/parser';
-import traverse, { NodePath } from '@babel/traverse';
-import { JSXOpeningElement } from '@babel/types';
+import traverse from '@babel/traverse';
+import { JSXElement } from '@babel/types';
 
-export function findFitNodePath(code: string, offset: number): NodePath<JSXOpeningElement> | null {
-	let nodePath: NodePath<JSXOpeningElement> | null = null;// use [] due to jsx opening element nested in other elements
+export function findFitJsxElement(code: string, offset: number): JSXElement | null {
+	let element: JSXElement | null = null;// use [] due to jsx opening element nested in other elements
 
 	// Temporarily "fix" the code by removing the `/` at the offset
 	const fixedCode = code.slice(0, offset) + code.slice(offset + 1);
@@ -44,9 +44,8 @@ export function findFitNodePath(code: string, offset: number): NodePath<JSXOpeni
 					}
 				}
 
-
 				if (start.index <= offset && end.index >= offset) {
-					nodePath = path;
+					element = path.parent as JSXElement;
 					path.stop();
 				}
 			},
@@ -55,7 +54,5 @@ export function findFitNodePath(code: string, offset: number): NodePath<JSXOpeni
 		console.error('Error parsing code:', error);
 	}
 
-	return nodePath;
-
-
+	return element;
 }

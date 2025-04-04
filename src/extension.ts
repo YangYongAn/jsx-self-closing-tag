@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { isJsxSupported } from './utils/lang';
-import { findFitNodePath } from './utils/ast';
+import { findFitJsxElement } from './utils/ast';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -16,18 +16,32 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 
 	for (const change of contentChanges) {
 		const { text, range } = change;
-	
+
 		if (text === '/') {
-			// 检查是否在支持 JSX 的环境中
+			// check if the current document is a JSX supported environment
 			if (!isJsxSupported(document, range.start)) {
 				return;
 			}
 
-			// 判断是否处于 JSXOpeningElement 中，且是非自闭合标签的结束位置
-			if (findFitNodePath(document.getText(), document.offsetAt(range.start))) {
-				console.log('这是应该要开始处理的');
+			const element = findFitJsxElement(document.getText(), document.offsetAt(range.start));
+
+			if (element) {
+				console.log('yes there', element);
+
+				const { closingElement } = element;
+				if (closingElement && closingElement.loc) {
+
+					const endPos = document.positionAt(closingElement.loc.end.index); // get the end position of the closing tag from loc.end.index
+					const writeRange = new vscode.Range(range.start, endPos); // create a new range object representing the current cursor position to the end position of the closing tag
+
+					const editor = vscode.window.activeTextEditor;
+					if (editor && editor.document === document) {
+						editor.edit(editBuilder => editBuilder.replace(writeRange, '/'), { undoStopBefore: false, undoStopAfter: false });
+					}
+				}
+
 			} else {
-				console.log('不必理会');
+				console.log('不必理会'); // no need to care
 			}
 		}
 	}
@@ -36,4 +50,4 @@ function handleTextChange(event: vscode.TextDocumentChangeEvent) {
 // This method is called when your extension is deactivated
 export function deactivate() {
 	console.log('deactivate');
- }
+}
