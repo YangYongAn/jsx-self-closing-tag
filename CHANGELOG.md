@@ -2,10 +2,69 @@
 
 All notable changes to the "jsx-self-closing-tag" extension will be documented in this file.
 
-
 ## [Unreleased]
 
 None.
+
+## [2.0.0] - 2025-04-04
+
+### Refactor
+
+- Refactored the processor by babel to improve performance and compatibility
+- Restrict the file type scope to only support the determination of JSX, TSX, and JSX/TSX code blocks within Markdown
+  files.
+
+> My test case
+
+```jsx
+
+
+export default function(){
+
+
+return <div>
+
+<App id={1}>   </App>
+<div id="x" icon={<App></App>}></div>
+
+
+<App></App>
+
+
+<div> 
+</div>
+<div>  </div>
+<App     
+></App>
+
+<my-tag></my-tag>
+
+<For.Bar></For.Bar>
+
+
+<h1
+
+>
+</h1>
+
+
+<App/>
+
+
+</div>
+
+}
+
+function App({id}) {
+
+    return (
+        <div>
+        <h1>My React App</h1>
+        <p>It's working!</p>
+        </div>
+    );
+}
+```
 
 ## [1.0.2] - 2024-01-25
 
@@ -28,8 +87,6 @@ None.
 ### Update
 
 - Added support for whitespace characters before '/'
-
-
 
 ## [1.0.0] - 2024-01-24
 
