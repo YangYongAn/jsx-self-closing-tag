@@ -14,35 +14,39 @@
     "onLanguage:typescriptreact",
     "onLanguage:markdown"
   ],
-  "main": "./out/extension.js",
-  "contributes": {
-  },
+  "main": "./dist/extension.js",
+  "contributes": {},
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "pnpm run compile && pnpm run lint",
+    "vscode:prepublish": "pnpm run build",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "pretest": "pnpm run build && pnpm run lint",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test",
-    "package": "pnpm vsce package --no-dependencies",
-    "publish": "pnpm vsce publish --no-dependencies"
+    "test": "node ./dist/test/runTest.js",
+    "package": "pnpm run build && vsce package --no-dependencies",
+    "publish": "pnpm run package && vsce publish --no-dependencies",
+    "clean": "rimraf dist",
+    "prepare": "pnpm run clean && pnpm install"
   },
   "dependencies": {
     "@babel/parser": "^7.26.10",
     "@babel/traverse": "^7.26.10"
   },
   "devDependencies": {
-    "@types/vscode": "^1.50.0",
+    "@babel/types": "^7.27.0",
+    "@types/babel__traverse": "^7.20.7",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/vscode": "^1.50.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
-    "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
-    "@babel/types": "^7.27.0",
-    "@types/babel__traverse": "^7.20.7"
+    "@vscode/vsce": "^3.3.2",
+    "eslint": "^8.56.0",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.3.3"
   },
   "repository": {
     "type": "git",
