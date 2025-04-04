@@ -6,7 +6,7 @@ All notable changes to the "jsx-self-closing-tag" extension will be documented i
 
 None.
 
-## [2.0.0] - 2025-04-04
+## [2.1.0] - 2025-04-04
 
 ### Refactor
 
