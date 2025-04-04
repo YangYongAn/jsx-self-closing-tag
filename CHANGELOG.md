@@ -4,7 +4,8 @@ All notable changes to the "jsx-self-closing-tag" extension will be documented i
 
 ## [Unreleased]
 
-None.
+- jsx in markdown file
+- bundle size （esm?）
 
 ## [2.1.0] - 2025-04-04
 
