@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsup'
+import {defineConfig} from 'tsup';
 
-const isDev = process.env.NODE_ENV === 'development'
+const isDev = process.env.NODE_ENV === 'development';
 
 export default defineConfig({
   entry: ['src/extension.ts'],
@@ -13,4 +13,4 @@ export default defineConfig({
   sourcemap: isDev,
   minify: !isDev,
   watch: isDev
-})
+});
