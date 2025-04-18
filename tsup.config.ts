@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 export default defineConfig({
   entry: ['src/extension.ts'],
   format: ['cjs'],
-  dts: true,
+  dts: false,
   clean: true,
   outDir: 'dist',
   external: ['vscode'],
