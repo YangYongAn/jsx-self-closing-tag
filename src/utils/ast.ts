@@ -1,6 +1,6 @@
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
-import { JSXElement } from '@babel/types';
+import type { JSXElement } from '@babel/types';
 
 export function findFitJsxElement(code: string, offset: number): JSXElement | null {
 	let element: JSXElement | null = null;// use [] due to jsx opening element nested in other elements
