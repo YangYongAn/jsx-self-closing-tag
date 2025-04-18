@@ -6,7 +6,7 @@ Help you auto close the self-closing tag in TSX / JSX when you input a '/'
 
 A picture is worth a thousand words:
 
-![demo.gif](./images/demo.gif)
+![demo.gif](https://raw.githubusercontent.com/YangYongAn/jsx-self-closing-tag/main/images/demo.gif)
 
 ## Requirements
 
