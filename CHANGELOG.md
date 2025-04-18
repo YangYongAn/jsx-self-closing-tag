@@ -7,6 +7,11 @@ All notable changes to the "jsx-self-closing-tag" extension will be documented i
 - jsx in markdown file
 - bundle size （esm?）
 
+## [2.1.1] - 2025-04-18
+
+- Update babel@8
+- Optimize package size
+
 ## [2.1.0] - 2025-04-04
 
 ### Refactor
